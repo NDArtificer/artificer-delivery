@@ -3,6 +3,11 @@ server.port: 8081
 spring:
   application:
     name: courier-management
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8085/oauth2/jwks
   jpa:
     hibernate:
       ddl-auto: update

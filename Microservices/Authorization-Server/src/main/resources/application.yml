@@ -1,0 +1,28 @@
+logging:
+  level:
+    org.springframework.security: DEBUG
+server:
+  port: 8085
+spring:
+  authorization-server:
+    issuer-uri: http://localhost:8085
+
+  application:
+    name: Authorization-Server
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/usersdb
+    username: postgres
+    password: postgres
+
+artificer:
+  auth:
+    keypass: 123456
+    storepass: 123456
+    alias: artificer
+    path: keystore/artificer.jks

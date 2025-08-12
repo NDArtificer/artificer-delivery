@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,7 +23,9 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.authorization.*;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -84,7 +88,19 @@ public class AuthSecurityConfig {
     }
 
     @Bean
-    public RegisteredClientRepository registredClientRepository(PasswordEncoder passwordEncoder) {
+    public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbcOperations,
+            RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcOperations, registeredClientRepository);
+    }
+
+    @Bean
+    public OAuth2AuthorizationConsentService oAuth2AuthorizationConsentService(JdbcOperations jdbcOperations,
+            RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationConsentService(jdbcOperations, registeredClientRepository);
+    }
+
+    @Bean
+    public RegisteredClientRepository registredClientRepository(PasswordEncoder passwordEncoder, JdbcTemplate jdbcTemplate) {
         RegisteredClient clientCredentials = RegisteredClient.withId("1")
                 .clientId("artificer")
                 .clientSecret(passwordEncoder.encode("123456"))
@@ -92,6 +108,8 @@ public class AuthSecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scope("couriers:read")
                 .scope("couriers:write")
+                .scope("deliveries:read")
+                .scope("deliveries:write")
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(java.time.Duration.ofMinutes(10))
                         .build())
@@ -112,6 +130,8 @@ public class AuthSecurityConfig {
                 .redirectUri("https://oauth.pstmn.io/v1/callback")
                 .scope("couriers:read")
                 .scope("couriers:write")
+                .scope("deliveries:read")
+                .scope("deliveries:write")
                 .tokenSettings(TokenSettings.builder()
                         .accessTokenTimeToLive(java.time.Duration.ofMinutes(10))
                         .refreshTokenTimeToLive(java.time.Duration.ofHours(1))
@@ -121,7 +141,11 @@ public class AuthSecurityConfig {
                         .requireAuthorizationConsent(true)
                         .build())
                 .build();
-        return new InMemoryRegisteredClientRepository(Arrays.asList(clientCredentials, authCode));
+
+        var clientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
+      //  clientRepository.save(clientCredentials);
+      //  clientRepository.save(authCode);
+        return clientRepository;
     }
 
     @Bean

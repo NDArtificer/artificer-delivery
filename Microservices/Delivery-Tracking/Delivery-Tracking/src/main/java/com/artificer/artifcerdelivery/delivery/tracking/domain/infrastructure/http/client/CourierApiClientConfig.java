@@ -37,6 +37,6 @@ public class CourierApiClientConfig {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(Duration.ofMillis(100));
         factory.setReadTimeout(2000);// Set connection timeout
-        return factory; // Placeholder for actual implementation}
+        return factory; // Placeholder for actual implementation
     }
 }

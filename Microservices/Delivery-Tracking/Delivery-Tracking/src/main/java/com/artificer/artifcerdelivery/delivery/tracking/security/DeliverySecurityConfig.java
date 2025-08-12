@@ -1,4 +1,4 @@
-package com.artificer.artifcerdelivery.courier.management.security;
+package com.artificer.artifcerdelivery.delivery.tracking.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
-public class CourierSecurityConfig {
+public class DeliverySecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

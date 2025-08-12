@@ -6,6 +6,8 @@ import com.artificer.artifcerdelivery.delivery.tracking.domain.model.Delivery;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.repository.DeliveryRepository;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.service.DeliveryCheckpointService;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.service.DeliveryPreparationService;
+import com.artificer.artifcerdelivery.delivery.tracking.security.CanEditDelivery;
+import com.artificer.artifcerdelivery.delivery.tracking.security.CanReadDelivery;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,16 +29,19 @@ public class DeliveryController {
     private final DeliveryRepository deliveryRepository;
 
     @GetMapping
+    @CanReadDelivery
     public PagedModel<Delivery> findAll(@PageableDefault Pageable pageable) {
         return new PagedModel<>(deliveryRepository.findAll(pageable)); // Placeholder for actual delivery retrieval logic
     }
 
     @GetMapping("/{deliveryId}")
+    @CanReadDelivery
     public Delivery findById(@PathVariable UUID deliveryId) {
         return deliveryRepository.findById(deliveryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)); // Placeholder for actual delivery retrieval logic
     }
 
+    @CanEditDelivery
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Delivery draft(@RequestBody @Valid DeliveryInput deliveryInput) {
@@ -44,22 +49,27 @@ public class DeliveryController {
 
     }
 
+    @CanEditDelivery
     @PutMapping("/{deliveryId}")
     public Delivery edit(@PathVariable UUID deliveryId, @RequestBody @Valid DeliveryInput deliveryInput) {
         return deliveryPreparationService.edit(deliveryId, deliveryInput); // Placeholder for actual delivery editing logic
 
     }
 
+    @CanEditDelivery
     @PostMapping("/{deliveryId}/placement")
     public void place(@PathVariable UUID deliveryId) {
         deliveryCheckpointService.place(deliveryId);
     }
 
+
+    @CanEditDelivery
     @PostMapping("/{deliveryId}/pickups")
     public void pickups(@PathVariable UUID deliveryId, @RequestBody @Valid CourierIdInput courierIdInput) {
         deliveryCheckpointService.pickUps(deliveryId, courierIdInput.getCourierId());
     }
 
+    @CanEditDelivery
     @PostMapping("/{deliveryId}/completition")
     public void complete(@PathVariable UUID deliveryId) {
         deliveryCheckpointService.complete(deliveryId);

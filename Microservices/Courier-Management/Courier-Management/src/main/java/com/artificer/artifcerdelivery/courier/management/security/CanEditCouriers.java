@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyRole('ADMIN','CLIENT') and hasAuthority('SCOPE_couriers:write')")
+@PreAuthorize("hasAuthority('SCOPE_couriers:write')")
 public @interface CanEditCouriers {
 }

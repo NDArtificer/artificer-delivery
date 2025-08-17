@@ -8,6 +8,21 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8085/oauth2/jwks
+      client:
+        registration:
+          artificer-client:
+            client-id: artificer
+            client-secret: 123456
+            authorization-grant-type: client_credentials
+            scope:
+              - couriers:read
+              - couriers:write
+              - deliveries:read
+              - deliveries:write
+            client-name: artificer-client
+        provider:
+          artificer-client:
+            token-uri: http://localhost:8085/oauth2/token
   jpa:
     hibernate:
       ddl-auto: update

@@ -10,8 +10,8 @@ spring:
   cloud:
     gateway.server.webflux:
       httpclient:
-        connect-timeout: 100 #ms
-        response-timeout: 10000ms
+        connect-timeout: 5000 #ms
+        response-timeout: 15000ms
       routes:
         - id: delivery-tracking-route
           uri: lb://delivery-tracking
@@ -25,10 +25,10 @@ spring:
                 statuses: INTERNAL_SERVER_ERROR, BAD_GATEWAY
                 method: GET,PUT
                 backoff:
-                  firstBackoff: 10ms
-                  maxBackoff: 30ms
+                  firstBackoff: 10000ms
+                  maxBackoff: 15000ms
                   factor: 2
-                timeout: 400ms
+                timeout: 4000ms
             - name: CircuitBreaker
               args:
                 name: delivery-tracking-route-circuit-breaker
@@ -76,4 +76,4 @@ resilience4j:
     instances:
       delivery-tracking-route-circuit-breaker:
         baseConfig: default
-        waitDurationInOpenState: 5000
+        waitDurationInOpenState: 10000

@@ -13,8 +13,5 @@ import org.springframework.web.service.annotation.PostExchange;
 public interface CourierApiClient {
 
     @PostExchange("/payout-calculation")
-    @Retry(name = "Retry_CourierApiClient_payoutCalculation")
-    @CircuitBreaker(name = "CircuitBreaker_CourierApiClient_payoutCalculation")
     CourierPayoutResultModel payoutCalculation(@RequestBody CourierPayoutCalculationInput payoutInputModel);
-        // Placeholder for payout calculation logic
 }

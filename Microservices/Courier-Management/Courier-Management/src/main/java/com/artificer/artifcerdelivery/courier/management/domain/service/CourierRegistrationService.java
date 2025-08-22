@@ -1,6 +1,7 @@
 package com.artificer.artifcerdelivery.courier.management.domain.service;
 
 import com.artificer.artifcerdelivery.courier.management.api.model.CourierInput;
+import com.artificer.artifcerdelivery.courier.management.domain.exception.EntidadeNaoEncontradaException;
 import com.artificer.artifcerdelivery.courier.management.domain.model.Courier;
 import com.artificer.artifcerdelivery.courier.management.domain.repository.CourierRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +14,23 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class CourierRegistrationService {
-private final CourierRepository courierRepository;
+
+    private final CourierRepository courierRepository;
+
     public Courier create(CourierInput courierInput) {
-        var curier = Courier.brandNew(courierInput.getName(),  courierInput.getPhone());
+        var curier = Courier.brandNew(courierInput.getName(), courierInput.getPhone());
         return courierRepository.saveAndFlush(curier);
     }
 
     public Courier update(UUID courierId, CourierInput courierInput) {
-        var courierToUpdate = courierRepository.findById(courierId)
-                .orElseThrow(() -> new IllegalArgumentException("Courier not found"));
+        var courierToUpdate = findCourierOrfail(courierId);
         courierToUpdate.setName(courierInput.getName());
         courierToUpdate.setPhone(courierInput.getPhone());
         return courierRepository.saveAndFlush(courierToUpdate);
+    }
+
+    public Courier findCourierOrfail(UUID courierId) {
+        return courierRepository.findById(courierId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Não foi possível encontrar o entregador com o ID: %s".formatted(courierId)));
     }
 }

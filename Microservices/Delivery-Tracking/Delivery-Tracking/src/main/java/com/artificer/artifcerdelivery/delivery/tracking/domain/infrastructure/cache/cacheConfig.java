@@ -1,6 +1,6 @@
 package com.artificer.artifcerdelivery.delivery.tracking.domain.infrastructure.cache;
 
-import com.artificer.artifcerdelivery.delivery.tracking.api.model.CourierPayoutResultModel;
+import com.artificer.artifcerdelivery.delivery.tracking.api.model.output.CourierPayoutResultModel;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.context.annotation.Bean;

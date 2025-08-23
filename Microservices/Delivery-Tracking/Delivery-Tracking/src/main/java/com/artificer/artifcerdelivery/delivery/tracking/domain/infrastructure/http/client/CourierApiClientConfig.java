@@ -43,7 +43,7 @@ public class CourierApiClientConfig {
 
     private ClientHttpRequestFactory generateClientHttpRequestFactory(AuthorizedClientServiceOAuth2AuthorizedClientManager clientManager) {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(Duration.ofMillis(3000));
+        factory.setConnectTimeout(Duration.ofMillis(5000));
         factory.setReadTimeout(20000);
 
         ClientHttpRequestInterceptor authInterceptor = (request, body, execution) -> {

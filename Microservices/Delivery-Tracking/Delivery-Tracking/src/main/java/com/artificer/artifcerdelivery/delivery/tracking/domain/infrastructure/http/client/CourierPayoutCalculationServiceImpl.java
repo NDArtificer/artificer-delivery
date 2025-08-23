@@ -1,7 +1,7 @@
 package com.artificer.artifcerdelivery.delivery.tracking.domain.infrastructure.http.client;
 
-import com.artificer.artifcerdelivery.delivery.tracking.api.model.CourierPayoutCalculationInput;
-import com.artificer.artifcerdelivery.delivery.tracking.api.model.CourierPayoutResultModel;
+import com.artificer.artifcerdelivery.delivery.tracking.api.model.input.CourierPayoutCalculationInput;
+import com.artificer.artifcerdelivery.delivery.tracking.api.model.output.CourierPayoutResultModel;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.infrastructure.fake.CourierApiClient;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.service.CourierPayoutCalculationService;
 import com.github.benmanes.caffeine.cache.Cache;

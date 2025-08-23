@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasAnyRole('ADMIN','CLIENT') and hasAuthority('SCOPE_deliveries:read')")
+@PreAuthorize("hasAnyRole('ADMIN','CLIENT') or hasAuthority('SCOPE_deliveries:read')")
 public @interface CanReadDelivery {
     // This annotation can be used to secure methods that allow reading of delivery tracking information
 }

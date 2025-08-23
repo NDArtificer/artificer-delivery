@@ -28,7 +28,7 @@ spring:
                   firstBackoff: 10000ms
                   maxBackoff: 15000ms
                   factor: 2
-                timeout: 4000ms
+                timeout: 10000ms
             - name: CircuitBreaker
               args:
                 name: delivery-tracking-route-circuit-breaker

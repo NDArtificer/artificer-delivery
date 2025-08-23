@@ -4,6 +4,7 @@ import java.util.List;
 
 public enum DeliveryStatus {
     DRAFT,
+    CANCELLED(DRAFT),
     WAITING_FOR_COURIER(DRAFT),
     IN_TRANSIT(WAITING_FOR_COURIER),
     DELIVERED(IN_TRANSIT);

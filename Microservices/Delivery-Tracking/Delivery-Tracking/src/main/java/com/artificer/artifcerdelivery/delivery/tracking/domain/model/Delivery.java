@@ -1,8 +1,10 @@
 package com.artificer.artifcerdelivery.delivery.tracking.domain.model;
 
+import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryCancelationEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryFulfilledEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryPickedupEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryPlacedEvent;
+import com.artificer.artifcerdelivery.delivery.tracking.exception.NegocioException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -110,9 +112,14 @@ public class Delivery extends AbstractAggregateRoot<Delivery> {
         super.registerEvent(new DeliveryFulfilledEvent(this.fulfilledAt, this.id));
     }
 
+    public void cancel() {
+        changeStatus(DeliveryStatus.CANCELLED);
+        super.registerEvent(new DeliveryCancelationEvent(this.fulfilledAt, this.id));
+    }
+
     public void pickUp(UUID courierId) {
         if (!isFilled()) {
-            throw new IllegalStateException("Cannot pick up a delivery that is not filled with sender, recipient and items.");
+            throw new NegocioException("Cannot pick up a delivery that is not filled with sender, recipient and items.");
         }
         setCourierId(courierId);
         changeStatus(DeliveryStatus.IN_TRANSIT);
@@ -139,20 +146,20 @@ public class Delivery extends AbstractAggregateRoot<Delivery> {
 
     private void changeStatus(DeliveryStatus status) {
         if (this.status.canNotChangeTo(status)) {
-            throw new IllegalStateException("Cannot change status from " + this.status + " to " + status);
+            throw new NegocioException("Cannot change status from " + this.status + " to " + status);
         }
         this.status = status;
     }
 
     public void verifyIfCanBeEdited() {
         if (this.status != DeliveryStatus.DRAFT) {
-            throw new IllegalStateException("Cannot edit a delivery that is not in DRAFT status.");
+            throw new NegocioException("Cannot edit a delivery that is not in DRAFT status.");
         }
     }
 
     public void editPreparationDetails(PreparationDetails preparationDetails) {
         if (preparationDetails == null) {
-            throw new IllegalArgumentException("Preparation details cannot be null.");
+            throw new NegocioException("Preparation details cannot be null.");
         }
         verifyIfCanBeEdited();
         this.setSender(preparationDetails.getSender());

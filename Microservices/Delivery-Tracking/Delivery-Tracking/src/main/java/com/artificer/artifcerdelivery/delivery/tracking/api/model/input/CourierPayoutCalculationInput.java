@@ -1,4 +1,4 @@
-package com.artificer.artifcerdelivery.delivery.tracking.api.model;
+package com.artificer.artifcerdelivery.delivery.tracking.api.model.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

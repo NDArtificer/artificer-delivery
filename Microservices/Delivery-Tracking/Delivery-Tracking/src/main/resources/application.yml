@@ -75,4 +75,4 @@ resilience4j:
     instances:
       CircuitBreaker_CourierApiClient_payoutCalculation:
         baseConfig: default
-        waitDurationInOpenState: 5000
+        waitDurationInOpenState: 10000

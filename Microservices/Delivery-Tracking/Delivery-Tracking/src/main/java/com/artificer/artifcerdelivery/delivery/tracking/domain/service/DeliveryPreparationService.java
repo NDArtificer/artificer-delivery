@@ -1,10 +1,11 @@
 package com.artificer.artifcerdelivery.delivery.tracking.domain.service;
 
-import com.artificer.artifcerdelivery.delivery.tracking.api.model.DeliveryInput;
-import com.artificer.artifcerdelivery.delivery.tracking.api.model.ItemInput;
+import com.artificer.artifcerdelivery.delivery.tracking.api.model.input.DeliveryInput;
+import com.artificer.artifcerdelivery.delivery.tracking.api.model.input.ItemInput;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.model.ContactPoint;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.model.Delivery;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.repository.DeliveryRepository;
+import com.artificer.artifcerdelivery.delivery.tracking.exception.EntidadeNaoEncontradaException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,6 @@ import java.util.UUID;
 public class DeliveryPreparationService {
 
     private final DeliveryRepository deliveryRepository;
-
     private final DeliveryTimeEstimationService deliveryTimeEstimationService;
     private final CourierPayoutCalculationService courierPayoutCalculationService;
 
@@ -31,11 +31,15 @@ public class DeliveryPreparationService {
 
     @Transactional
     public Delivery edit(UUID deliveryId, DeliveryInput deliveryInput) {
-        Delivery delivery = deliveryRepository.findById(deliveryId)
-                .orElseThrow(() -> new IllegalArgumentException("Delivery not found"));
+        Delivery delivery = findOrFail(deliveryId);
         delivery.removeAllItems();
         handlePreparation(delivery, deliveryInput);
         return deliveryRepository.saveAndFlush(delivery);
+    }
+
+    public Delivery findOrFail(UUID deliveryId) {
+        return deliveryRepository.findById(deliveryId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Delivery not found with ID: " + deliveryId));
     }
 
     private void handlePreparation(Delivery delivery, DeliveryInput deliveryInput) {

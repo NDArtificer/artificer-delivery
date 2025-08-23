@@ -1,4 +1,4 @@
-package com.artificer.artifcerdelivery.delivery.tracking.api.model;
+package com.artificer.artifcerdelivery.delivery.tracking.api.model.input;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

@@ -22,13 +22,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/api/v1/couriers")
@@ -47,50 +45,51 @@ public class CourierController {
     public ResponseEntity<CustomPage<CourierOutput>> findAll(@PageableDefault Pageable pageable) {
 
         Page<Courier> couriersPage = courierRepository.findAll(pageable);
-
         List<CourierOutput> courierOutputs = courierMapper.toModel(couriersPage.getContent());
-
         PageMetaData pageMetaData = PageMetaData.brandNewPage(couriersPage);
-
         CustomPage<CourierOutput> couriersOutputPage = new CustomPage<>(courierOutputs, pageMetaData);
 
         return ResponseEntity.ok(couriersOutputPage);
     }
 
-    @GetMapping("/{courierId}")
     @CanReadCouriers
-    public CourierOutput findById(@PathVariable UUID courierId) {
+    @GetMapping("/{courierId}")
+    public ResponseEntity<CourierOutput> findById(@PathVariable UUID courierId) {
         Courier courier = courierRegistrationService.findCourierOrfail(courierId);
-        return courierMapper.toModel(courier);
+        CourierOutput courierOutput = courierMapper.toModel(courier);
+        return ResponseEntity.ok(courierOutput);
     }
 
     @CanEditCouriers
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CourierOutput registerCourier(@Valid @RequestBody CourierInput courier) {
-        Courier courier1 = courierRegistrationService.create(courier);
-        return courierMapper.toModel(courier1);
-    }
-
-    @CanEditCouriers
-    @PutMapping("/{courierId}")
-    public CourierOutput updateCourier(@PathVariable UUID courierId, @Valid @RequestBody CourierInput courier) {
-        Courier courierAtualizado = courierRegistrationService.update(courierId, courier);
-        return courierMapper.toModel(courierAtualizado);
-    }
-
-    @CanEditCouriers
-    @PostMapping("/payout-calculation")
-    public CourierPayoutResultModel calculatePayout(@RequestBody CourierPayoutCalculationInput input) {
-        BigDecimal payoutFee = courierPayoutService.calculatePayout(input.getDistanceInKm());
-        return new CourierPayoutResultModel(payoutFee);
+    public ResponseEntity<CourierOutput> registerCourier(@Valid @RequestBody CourierInput courierInput) {
+        Courier courier = courierRegistrationService.create(courierInput);
+        CourierOutput courierOutput = courierMapper.toModel(courier);
+        return ResponseEntity.status(HttpStatus.CREATED).body(courierOutput);
     }
 
     @CanEditCouriers
     @DeleteMapping("/{courierId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCourier(@PathVariable UUID courierId) {
+    public ResponseEntity<Void> deleteCourier(@PathVariable UUID courierId) {
         Courier courier = courierRegistrationService.findCourierOrfail(courierId);
         courierRepository.deleteById(courier.getId());
+        return ResponseEntity.noContent().build();
     }
+
+    @CanEditCouriers
+    @PutMapping("/{courierId}")
+    public ResponseEntity<CourierOutput> updateCourier(@PathVariable UUID courierId, @Valid @RequestBody CourierInput courier) {
+        Courier courierAtualizado = courierRegistrationService.update(courierId, courier);
+        CourierOutput courierOutput = courierMapper.toModel(courierAtualizado);
+        return ResponseEntity.ok(courierOutput);
+    }
+
+    @CanEditCouriers
+    @PostMapping("/payout-calculation")
+    public ResponseEntity<CourierPayoutResultModel> calculatePayout(@RequestBody CourierPayoutCalculationInput input) {
+        BigDecimal payoutFee = courierPayoutService.calculatePayout(input.getDistanceInKm());
+        CourierPayoutResultModel courierPayoutResultModel = new CourierPayoutResultModel(payoutFee);
+        return ResponseEntity.ok(courierPayoutResultModel);
+    }
+
 }

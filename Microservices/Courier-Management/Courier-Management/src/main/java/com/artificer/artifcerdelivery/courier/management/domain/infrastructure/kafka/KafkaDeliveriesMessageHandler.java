@@ -1,5 +1,6 @@
 package com.artificer.artifcerdelivery.courier.management.domain.infrastructure.kafka;
 
+import com.artificer.artifcerdelivery.courier.management.domain.infrastructure.event.DeliveryCancellationIntegrationEvent;
 import com.artificer.artifcerdelivery.courier.management.domain.infrastructure.event.DeliveryFulfilledntegrationEvent;
 import com.artificer.artifcerdelivery.courier.management.domain.infrastructure.event.DeliveryPlacedIntegrationEvent;
 import com.artificer.artifcerdelivery.courier.management.domain.service.CourierDeliveryService;
@@ -33,6 +34,12 @@ public class KafkaDeliveriesMessageHandler {
     @KafkaHandler
     public void handle(@Payload DeliveryFulfilledntegrationEvent event) {
         log.warn("Received DeliveryFulfilledIntegrationEvent type: {}", event.getClass().getName());
+        courierDeliveryService.fulfill(event.getDeliveryId());
+    }
+
+    @KafkaHandler
+    public void handle(@Payload DeliveryCancellationIntegrationEvent event) {
+        log.warn("Received DeliveryCancellationIntegrationEvent type: {}", event.getClass().getName());
         courierDeliveryService.fulfill(event.getDeliveryId());
     }
 

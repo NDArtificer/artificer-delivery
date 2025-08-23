@@ -18,11 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -77,25 +75,29 @@ public class DeliveryController {
 
     @CanEditDelivery
     @PutMapping("/{deliveryId}/placement")
-    public void place(@PathVariable UUID deliveryId) {
+    public  ResponseEntity<Void> place(@PathVariable UUID deliveryId) {
         deliveryCheckpointService.place(deliveryId);
+        return ResponseEntity.noContent().build();
     }
 
     @CanEditDelivery
     @PutMapping("/{deliveryId}/pickups")
-    public void pickups(@PathVariable UUID deliveryId, @RequestBody @Valid CourierIdInput courierIdInput) {
+    public ResponseEntity<Void> pickups(@PathVariable UUID deliveryId, @RequestBody @Valid CourierIdInput courierIdInput) {
         deliveryCheckpointService.pickUps(deliveryId, courierIdInput.getCourierId());
+        return ResponseEntity.noContent().build();
     }
 
     @CanEditDelivery
     @PutMapping("/{deliveryId}/completition")
-    public void complete(@PathVariable UUID deliveryId) {
+    public ResponseEntity<Void> complete(@PathVariable UUID deliveryId) {
         deliveryCheckpointService.complete(deliveryId);
+        return ResponseEntity.noContent().build();
     }
 
     @CanEditDelivery
     @PutMapping("/{deliveryId}/cancellation")
-    public void cancel(@PathVariable UUID deliveryId) {
+    public ResponseEntity<Void> cancel(@PathVariable UUID deliveryId) {
         deliveryCheckpointService.cancel(deliveryId);
+        return ResponseEntity.noContent().build();
     }
 }

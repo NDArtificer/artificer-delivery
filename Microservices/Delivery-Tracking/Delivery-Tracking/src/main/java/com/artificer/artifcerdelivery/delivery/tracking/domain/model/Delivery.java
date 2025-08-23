@@ -1,6 +1,6 @@
 package com.artificer.artifcerdelivery.delivery.tracking.domain.model;
 
-import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryCancelationEvent;
+import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryCancellationEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryFulfilledEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryPickedupEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryPlacedEvent;
@@ -114,7 +114,7 @@ public class Delivery extends AbstractAggregateRoot<Delivery> {
 
     public void cancel() {
         changeStatus(DeliveryStatus.CANCELLED);
-        super.registerEvent(new DeliveryCancelationEvent(this.fulfilledAt, this.id));
+        super.registerEvent(new DeliveryCancellationEvent(this.fulfilledAt, this.id));
     }
 
     public void pickUp(UUID courierId) {
@@ -181,6 +181,5 @@ public class Delivery extends AbstractAggregateRoot<Delivery> {
         private BigDecimal currierPayout;
         private Duration expectedDeliveryTime;
 
-        // Getters can be added here if needed
     }
 }

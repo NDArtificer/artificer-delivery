@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @AllArgsConstructor
-public class DeliveryCancelationEvent {
+public class DeliveryCancellationEvent {
     private OffsetDateTime ocurrendAt;
     private UUID deliveryId;
 }

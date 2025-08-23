@@ -1,6 +1,6 @@
 package com.artificer.artifcerdelivery.delivery.tracking.domain.infrastructure.event;
 
-import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryCancelationEvent;
+import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryCancellationEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryFulfilledEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryPickedupEvent;
 import com.artificer.artifcerdelivery.delivery.tracking.domain.event.DeliveryPlacedEvent;
@@ -39,8 +39,8 @@ public class DeliveryDomainEventHandler {
     }
 
     @EventListener
-    public void handle(DeliveryCancelationEvent event) {
-        log.info("Handling DeliveryCancelationEvent: {}", event.toString());
+    public void handle(DeliveryCancellationEvent event) {
+        log.info("Handling DeliveryCancellationEvent: {}", event.toString());
         integrationEventPublisher.publish(event, event.getDeliveryId().toString(), deliveryEventsTopicName);
     }
 }

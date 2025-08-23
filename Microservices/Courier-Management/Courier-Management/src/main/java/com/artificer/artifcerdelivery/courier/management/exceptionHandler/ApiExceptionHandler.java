@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    public static final String URL = "https://courier-management.com/";
+    public static final String URL = "https://courier-management.com/erros/";
+
     @Autowired
     private MessageSource messageSource;
 
@@ -29,7 +30,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpStatusCode status, WebRequest request) {
         var problemDetails = ProblemDetail.forStatus(status);
         problemDetails.setTitle("Um ou mais campos do payload estão inválidos!");
-        problemDetails.setType(URI.create("%serros/campos-invalidos".formatted(URL)));
+        problemDetails.setType(URI.create("%scampos-invalidos".formatted(URL)));
 
         var fieldErros = ex.getBindingResult().getAllErrors().stream().collect(Collectors.toMap(
                 objectError -> ((FieldError) objectError).getField(),
@@ -43,7 +44,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handleNegocioException(NegocioException e) {
         var problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
         problemDetail.setTitle(e.getMessage());
-        problemDetail.setType(URI.create("%serros/regra-de-negocio-violada".formatted(URL)));
+        problemDetail.setType(URI.create("%sregra-de-negocio-violada".formatted(URL)));
         return problemDetail;
     }
 
@@ -51,7 +52,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handleEntidadeNaoEncontrada(NegocioException e) {
         var problemDetail = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
         problemDetail.setTitle(e.getMessage());
-        problemDetail.setType(URI.create("%serros/recurso-nao-encontrado".formatted(URL)));
+        problemDetail.setType(URI.create("%srecurso-nao-encontrado".formatted(URL)));
         return problemDetail;
     }
 
@@ -59,7 +60,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException e) {
         var problemDetail = ProblemDetail.forStatus(HttpStatus.CONFLICT);
         problemDetail.setTitle("Recurso a ser excluído está em uso!");
-        problemDetail.setType(URI.create("%serros/recurso-em-uso".formatted(URL)));
+        problemDetail.setType(URI.create("%srecurso-em-uso".formatted(URL)));
         return problemDetail;
     }
 
